@@ -1,0 +1,8 @@
+Queries :
+
+1. show_movies() - show all movies
+2. shows_for_movies() - based upon a particular movie filter out the results
+3. view_seat_reservations() - view list of reserved seats
+4. book()
+5. cancel()
+
