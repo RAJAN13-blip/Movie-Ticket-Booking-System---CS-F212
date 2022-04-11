@@ -19,7 +19,7 @@ CREATE TABLE `Movie` (
   `movie_name` nvarchar(50),
   `director` nvarchar(50),
   `duration`  int unsigned,
-  `release_date` Date check(curdate()-release_date>=0 and curdate()-release_date<30),
+  `release_date` Date,
   PRIMARY KEY (`movie_id`)
 );
 
@@ -68,7 +68,7 @@ CREATE TABLE `Reservation` (
 CREATE TABLE `Seats` (
   `reservation_id` nvarchar(8),
   `seat_id` nvarchar(5),
-  KEY `Key` (`seat_id`),
+  PRIMARY KEY (`seat_id`),
   foreign key (`reservation_id`) references `Reservation`(`reservation_id`)
 );
 
