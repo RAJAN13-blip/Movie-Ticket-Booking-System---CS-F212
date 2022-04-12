@@ -64,9 +64,9 @@ CREATE TABLE `Reservation` (
 );
 
 CREATE TABLE `Seats` (
-  `reservation_id` nvarchar(8),
   `seat_id` int unsigned,
-   KEY (`seat_id`),
+  `reservation_id` nvarchar(8),
+   primary key (`seat_id`,`reservation_id`),
   foreign key (`reservation_id`) references `Reservation`(`reservation_id`)
 );
 
@@ -92,18 +92,6 @@ INSERT into Movie_Screening values ('3','2','1','1','2022-04-15 10:00:00',10,100
 -- INSERT into Movie_Screening values ('4','2','2','1','2022-04-15 15:00:00',10,100);
 -- INSERT into Movie_Screening values ('5','1','1','2','2022-04-15 20:00:00',10,100);
 -- INSERT into Movie_Screening values ('6','2','1','2','2022-04-15 10:00:00',10,100);
--- Seats Insertion
-INSERT into Seats values 
-(NULL,1),
-(NULL,2),
-(NULL,3),
-(NULL,4),
-(NULL,5),
-(NULL,6),
-(NULL,7),
-(NULL,8),
-(NULL,9),
-(NULL,10);
 
 
 
