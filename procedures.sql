@@ -38,4 +38,49 @@ DELIMITER ;
 -- filters out the seats that are available for particular screening
 
 
+-- drop procedure book_seat;
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `book_seat`(IN seat_id int unsigned,IN screening_id nvarchar(8),IN customer_id nvarchar(8))
+MODIFIES SQL DATA
+NOT DETERMINISTIC
+SQL SECURITY INVOKER
+COMMENT 'Executes transaction for booking the seats'
+BEGIN
+DECLARE seatsLeft int unsigned;
+DECLARE countSeats int unsigned;
+DECLARE ticketPrice int unsigned;
+DECLARE cineID nvarchar(5);
+DECLARE reserID int unsigned;
+SET seatsLeft=(SELECT Movie_Screening.seats_left from movietickets.Movie_Screening
+where Movie_Screening.screening_id=screening_id);
+IF seatsLeft > 0 THEN
+CREATE table r_ids as (select reservation.reservation_id from movietickets.reservation
+where reservation.screening_id=screening_id);
+SET countSeats=(select count(seats.seat_id) from r_ids, movietickets.seats
+where r_ids.reservation_id = seats.reservation_id and seats.seat_id=seat_id);
+drop table r_ids;
+IF countSeats = 0 then
+START TRANSACTION;
+SET ticketPrice=(select Movie_Screening.price from movietickets.Movie_Screening
+where Movie_Screening.screening_id=screening_id);
+update movietickets.customer
+set customer.amount = customer.amount - ticketPrice
+where customer.customer_id=customer_id;
+SET cineID=(select Movie_Screening.cinehouse_id from movietickets.movie_screening where movie_screening.screening_id=screening_id);
+update movietickets.cinemahouse
+set cinemahouse.funds = cinemahouse.funds + ticketPrice
+where cinemahouse.cinehouse_id=cineID;
+insert into movietickets.reservation (reservation.screening_id,reservation.customer_id) values(screening_id,customer_id);
+SET reserID=last_insert_id();
+insert into movietickets.seats values(seat_id,reserID);
+commit;
+ELSE SELECT "Seat already booked" as Message;
+END IF;
+ELSE SELECT "No Seats Left" as Message;
+END IF;
+END$$
+DELIMITER ;
+
+-- CALL book_seat(1,'1','1');
+
 

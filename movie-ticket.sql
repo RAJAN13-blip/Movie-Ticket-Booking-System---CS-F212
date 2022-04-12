@@ -55,7 +55,7 @@ CREATE TABLE `Movie_Screening` (
 );
 
 CREATE TABLE `Reservation` (
-  `reservation_id` nvarchar(8),
+  `reservation_id` int unsigned auto_increment,
   `screening_id` nvarchar(8),
   `customer_id` nvarchar(8),
   PRIMARY KEY (`reservation_id`),
@@ -63,9 +63,11 @@ CREATE TABLE `Reservation` (
   FOREIGN KEY (`customer_id`) REFERENCES `Customer`(`customer_id`) on delete cascade
 );
 
+ALTER TABLE Reservation auto_increment=1;
+
 CREATE TABLE `Seats` (
   `seat_id` int unsigned,
-  `reservation_id` nvarchar(8),
+  `reservation_id` int unsigned,
    primary key (`seat_id`,`reservation_id`),
   foreign key (`reservation_id`) references `Reservation`(`reservation_id`)
 );
@@ -92,6 +94,3 @@ INSERT into Movie_Screening values ('3','2','1','1','2022-04-15 10:00:00',10,100
 -- INSERT into Movie_Screening values ('4','2','2','1','2022-04-15 15:00:00',10,100);
 -- INSERT into Movie_Screening values ('5','1','1','2','2022-04-15 20:00:00',10,100);
 -- INSERT into Movie_Screening values ('6','2','1','2','2022-04-15 10:00:00',10,100);
-
-
-
