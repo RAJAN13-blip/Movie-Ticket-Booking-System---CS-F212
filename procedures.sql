@@ -95,6 +95,8 @@ IF seatsLeft > 0 THEN
 		IF countSeats = 0 then
 
 			START TRANSACTION;
+            update movietickets.movie_screening 
+            set movie_screening.seats_left = movie_screening.seats_left - 1 where movie_screening.screening_id = screening_id;
 			SET ticketPrice=(select Movie_Screening.price from movietickets.Movie_Screening
 			where Movie_Screening.screening_id=screening_id);
             
@@ -111,9 +113,6 @@ IF seatsLeft > 0 THEN
 			insert into movietickets.reservation (reservation.screening_id,reservation.customer_id) values(screening_id,customer_id);
 			SET reserID=last_insert_id();
 			insert into movietickets.seats values(seat_id,reserID);
-            
-            update movietickets.movie_screening 
-            set movie_screening.seats_left = movie_screening.seats_left - 1 where movie_screening.screening_id = screening_id;
 			commit;
 		ELSE SELECT "Seat already booked" as Message;
 		END IF;
