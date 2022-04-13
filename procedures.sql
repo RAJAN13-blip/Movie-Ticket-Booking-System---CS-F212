@@ -84,6 +84,7 @@ DECLARE countSeats int unsigned;
 DECLARE ticketPrice int unsigned;
 DECLARE cineID nvarchar(5);
 DECLARE reserID int unsigned;
+DECLARE custAmt int unsigned;
 SET seatsLeft=(SELECT Movie_Screening.seats_left from movietickets.Movie_Screening
 where Movie_Screening.screening_id=screening_id);
 IF seatsLeft > 0 THEN
@@ -93,13 +94,13 @@ IF seatsLeft > 0 THEN
 	where r_ids.reservation_id = seats.reservation_id and seats.seat_id=seat_id);
 	drop table r_ids;
 		IF countSeats = 0 then
-
+			SET ticketPrice=(select Movie_Screening.price from movietickets.Movie_Screening
+			where Movie_Screening.screening_id=screening_id);
+            SET custAmt=(select customer.amount from movietickets.customer where customer.customer_id=customer_id);
+            IF custAmt >= ticketPrice then
 			START TRANSACTION;
             update movietickets.movie_screening 
             set movie_screening.seats_left = movie_screening.seats_left - 1 where movie_screening.screening_id = screening_id;
-			SET ticketPrice=(select Movie_Screening.price from movietickets.Movie_Screening
-			where Movie_Screening.screening_id=screening_id);
-            
 			update movietickets.customer
 			set customer.amount = customer.amount - ticketPrice
 			where customer.customer_id=customer_id;
@@ -115,6 +116,8 @@ IF seatsLeft > 0 THEN
 			insert into movietickets.seats values(seat_id,reserID);
             select reserID as 'Reservation ID';
 			commit;
+            ELSE SELECT "Not enough funds" as message;
+            END IF;
 		ELSE SELECT "Seat already booked" as Message;
 		END IF;
 ELSE SELECT "No Seats Left" as Message;
