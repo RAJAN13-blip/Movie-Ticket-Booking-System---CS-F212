@@ -69,7 +69,7 @@ CREATE TABLE `Seats` (
   `seat_id` int unsigned,
   `reservation_id` int unsigned,
    primary key (`seat_id`,`reservation_id`),
-  foreign key (`reservation_id`) references `Reservation`(`reservation_id`)
+  foreign key (`reservation_id`) references `Reservation`(`reservation_id`) on delete cascade
 );
 
 
